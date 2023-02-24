@@ -1132,7 +1132,6 @@ public abstract class Mob extends Char {
 	public static void holdAllies( Level level, int holdFromPos ){
 		heldAllies.clear();
 		for (Mob mob : level.mobs.toArray( new Mob[0] )) {
-			//preserve directable allies no matter where they are
 			if (mob instanceof DirectableAlly) {
 				((DirectableAlly) mob).clearDefensingPos();
 				level.mobs.remove( mob );
@@ -1141,7 +1140,7 @@ public abstract class Mob extends Char {
 			//preserve intelligent allies if they are near the hero
 			} else if (mob.alignment == Alignment.ALLY
 					&& mob.intelligentAlly
-					&& Dungeon.level.distance(holdFromPos, mob.pos) <= 5){
+					&& Dungeon.level.distance(holdFromPos, mob.pos) <= 500){
 				level.mobs.remove( mob );
 				heldAllies.add(mob);
 			}

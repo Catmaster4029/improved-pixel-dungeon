@@ -1,10 +1,15 @@
 package com.shatteredpixel.shatteredpixeldungeon.sprites;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Warlock;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.LightOrb;
+import com.shatteredpixel.shatteredpixeldungeon.effects.MagicMissile;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ShaftParticle;
 import com.watabou.glwrap.Blending;
 import com.watabou.noosa.TextureFilm;
+import com.watabou.noosa.audio.Sample;
+import com.watabou.utils.Callback;
 
 public class LightOrbSprite extends MobSprite {
 
@@ -48,4 +53,21 @@ public class LightOrbSprite extends MobSprite {
     public int blood() {
         return 0xFFFFFF;
     }
+    public void zap( int cell ) {
+
+        super.zap( cell );
+
+        MagicMissile.boltFromChar( parent,
+                MagicMissile.BEACON,
+                this,
+                cell,
+                new Callback() {
+                    @Override
+                    public void call() {
+                        ((LightOrb)ch).onZapComplete();
+                    }
+                } );
+        Sample.INSTANCE.play( Assets.Sounds.ZAP );
+    }
 }
+

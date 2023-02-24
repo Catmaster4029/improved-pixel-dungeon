@@ -36,6 +36,7 @@ public class LightOrb extends Mob {
                 defenseSkill = 1000;
 
                 alignment = Alignment.ALLY;
+                intelligentAlly = true;
         }
 
         @Override
@@ -75,10 +76,6 @@ public class LightOrb extends Mob {
                         }
                 }
         }
-
-        //used so resistances can differentiate between melee and magical attacks
-        public static class DarkBolt{}
-
         protected void zap() {
                 spend( 1f );
 
