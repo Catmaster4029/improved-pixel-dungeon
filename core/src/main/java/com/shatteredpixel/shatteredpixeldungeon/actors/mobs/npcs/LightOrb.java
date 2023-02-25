@@ -114,7 +114,7 @@ public class LightOrb extends DirectableAlly {
 
 
         public static void spawnNext( int pos ) {
-                for (int n : PathFinder.RIGHT) {
+                for (int n : PathFinder.NEIGHBOURS2) {
                         spawnAtOrb(pos + n);
                 }
         }
