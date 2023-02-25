@@ -1,17 +1,11 @@
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs;
 
-import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AscensionChallenge;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Degrade;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Light;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Warlock;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.YogFist;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ShadowParticle;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
@@ -20,12 +14,11 @@ import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.LightOrbSprite;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
-import com.watabou.noosa.audio.Sample;
 import com.watabou.noosa.tweeners.AlphaTweener;
 import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
 
-public class LightOrb extends DirectableAlly {
+public class LightOrb2 extends DirectableAlly {
 
         private static final float TIME_TO_ZAP	= 1f;
 
@@ -114,14 +107,14 @@ public class LightOrb extends DirectableAlly {
 
 
         public static void spawnNext( int pos ) {
-                for (int n : PathFinder.RIGHT) {
+                for (int n : PathFinder.LEFT) {
                         spawnAtOrb(pos + n);
                 }
         }
-        public static LightOrb spawnAtOrb(int pos ) {
+        public static LightOrb2 spawnAtOrb(int pos ) {
                 if ((!Dungeon.level.solid[pos] || Dungeon.level.passable[pos]) && Actor.findChar( pos ) == null) {
 
-                        LightOrb w = new LightOrb();
+                        LightOrb2 w = new LightOrb2();
                         w.pos = pos;
                         Dungeon.level.occupyCell(w);
                         GameScene.add( w );

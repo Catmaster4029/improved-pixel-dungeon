@@ -31,6 +31,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Eye;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Wraith;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.LightOrb;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.LightOrb2;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.PrismaticImage;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.items.TengusMask;
@@ -87,6 +88,7 @@ public class WndChooseSubclass extends Window {
 								tome.choose( subCls );
 								if (Dungeon.hero.subClass == HeroSubClass.LIGHTBENDER){
 									LightOrb.spawnNext( hero.pos );
+									LightOrb2.spawnNext(hero.pos );
 								}
 							}
 						}

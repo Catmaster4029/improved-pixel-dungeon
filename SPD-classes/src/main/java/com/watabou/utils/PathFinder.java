@@ -44,6 +44,8 @@ public class PathFinder {
 	public static int[] NEIGHBOURS8;
 	public static int[] NEIGHBOURS9;
 	public static int[] NEIGHBOURS2;
+	public static int[] LEFT;
+	public static int[] RIGHT;
 
 	//similar to their equivalent neighbour arrays, but the order is clockwise.
 	//Useful for some logic functions, but is slower due to lack of array-access order.
@@ -67,6 +69,8 @@ public class PathFinder {
 
 		NEIGHBOURS4 = new int[]{-width, -1, +1, +width};
 		NEIGHBOURS2 = new int[]{ -1, +1};
+		LEFT = new int[]{ -1};
+		RIGHT = new int[]{+1 };
 		NEIGHBOURS8 = new int[]{-width-1, -width, -width+1, -1, +1, +width-1, +width, +width+1};
 		NEIGHBOURS9 = new int[]{-width-1, -width, -width+1, -1, 0, +1, +width-1, +width, +width+1};
 

@@ -119,7 +119,7 @@ public class Messages {
 			if (c != null && c.getSuperclass() != null){
 				return get(c.getSuperclass(), k, args);
 			} else {
-				return "This text is missing, ask for fix. Name: " + k;
+				return  k;
 			}
 		}
 	}
