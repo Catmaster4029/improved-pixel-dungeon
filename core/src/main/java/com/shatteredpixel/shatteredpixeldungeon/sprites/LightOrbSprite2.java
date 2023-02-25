@@ -2,6 +2,7 @@ package com.shatteredpixel.shatteredpixeldungeon.sprites;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.LightOrb;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.LightOrb2;
 import com.shatteredpixel.shatteredpixeldungeon.effects.MagicMissile;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ShaftParticle;
@@ -15,7 +16,7 @@ public class LightOrbSprite2 extends MobSprite {
     public LightOrbSprite2() {
         super();
 
-        texture( Assets.Sprites.LIGHT_ORB );
+        texture( Assets.Sprites.LIGHT_ORB2 );
 
         TextureFilm frames = new TextureFilm( texture, 14, 15 );
 
@@ -63,7 +64,7 @@ public class LightOrbSprite2 extends MobSprite {
                 new Callback() {
                     @Override
                     public void call() {
-                        ((LightOrb)ch).onZapComplete();
+                        ((LightOrb2)ch).onZapComplete();
                     }
                 } );
         Sample.INSTANCE.play( Assets.Sounds.ZAP );
