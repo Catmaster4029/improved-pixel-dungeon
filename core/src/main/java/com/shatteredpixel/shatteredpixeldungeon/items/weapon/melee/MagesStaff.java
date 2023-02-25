@@ -71,7 +71,7 @@ public class MagesStaff extends MeleeWeapon {
 
 	public static final String AC_IMBUE = "IMBUE";
 	public static final String AC_ZAP	= "ZAP";
-	public static final String ORBS	= "MANAGE ORBS";
+	public static final String AC_ORBS	= "MANAGE ORBS";
 
 
 	private static final float STAFF_SCALE_FACTOR = 0.75f;
@@ -117,7 +117,7 @@ public class MagesStaff extends MeleeWeapon {
 			actions.add( AC_ZAP );
 		}
 		if (Dungeon.hero.subClass == HeroSubClass.LIGHTBENDER){
-			actions.add(ORBS);
+			actions.add(AC_ORBS);
 		}
 		return actions;
 	}
@@ -146,7 +146,7 @@ public class MagesStaff extends MeleeWeapon {
 			if (cursed || hasCurseEnchant()) wand.cursed = true;
 			else                             wand.cursed = false;
 			wand.execute(hero, AC_ZAP);
-		} else if (action.equals(ORBS)) {
+		} else if (action.equals(AC_ORBS)) {
 			GameScene.show(new WndOrbsManage());
 			return;
 		}

@@ -25,7 +25,7 @@ import com.watabou.noosa.tweeners.AlphaTweener;
 import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
 
-public class LightOrb extends Mob {
+public class LightOrb extends DirectableAlly {
 
         private static final float TIME_TO_ZAP	= 1f;
 
@@ -34,7 +34,7 @@ public class LightOrb extends Mob {
 
                 HP = HT = 1 ;
                 defenseSkill = 1000;
-
+                state = HUNTING;
                 alignment = Alignment.ALLY;
                 intelligentAlly = true;
         }
