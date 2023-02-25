@@ -297,6 +297,5 @@ public class Assets {
 		public static final String SPIRIT_HAWK= "sprites/spirit_hawk.png";
 		public static final String RED_SENTRY= "sprites/red_sentry.png";
 		public static final String LIGHT_ORB= "sprites/light_orb.png";
-		public static final String LIGHT_ORB2= "sprites/light_orb.png";
 	}
 }
