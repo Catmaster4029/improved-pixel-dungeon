@@ -251,7 +251,8 @@ public abstract class Char extends Actor {
 		
 		return true;
 	}
-	
+
+
 	protected boolean moveSprite( int from, int to ) {
 		
 		if (sprite.isVisible() && (Dungeon.level.heroFOV[from] || Dungeon.level.heroFOV[to])) {

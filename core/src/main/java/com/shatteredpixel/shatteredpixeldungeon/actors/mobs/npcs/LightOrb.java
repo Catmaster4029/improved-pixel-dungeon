@@ -5,8 +5,12 @@ import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.CorrosiveGas;
+import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.ToxicGas;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AllyBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AscensionChallenge;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Burning;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Degrade;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Light;
@@ -14,14 +18,19 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Warlock;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.YogFist;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ShadowParticle;
+import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfRetribution;
+import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfPsionicBlast;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.LightOrbSprite;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
+import com.shatteredpixel.shatteredpixeldungeon.windows.WndOrbsManage;
+import com.watabou.noosa.Game;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.noosa.tweeners.AlphaTweener;
+import com.watabou.utils.Callback;
 import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
 
@@ -37,6 +46,14 @@ public class LightOrb extends DirectableAlly {
                 state = HUNTING;
                 alignment = Alignment.ALLY;
                 intelligentAlly = true;
+        }
+
+        {
+                immunities.add( ToxicGas.class );
+                immunities.add( CorrosiveGas.class );
+                immunities.add( Burning.class );
+                immunities.add( ScrollOfRetribution.class );
+                immunities.add( ScrollOfPsionicBlast.class );
         }
 
         @Override
@@ -55,6 +72,25 @@ public class LightOrb extends DirectableAlly {
         }
 
         @Override
+        public int defenseSkill( Char enemy ) {
+                return INFINITE_EVASION;
+        }
+
+        @Override
+        public boolean interact(Char c) {
+                if (c != Dungeon.hero) {
+                        return true;
+                }
+                Game.runOnRenderThread(new Callback() {
+                        @Override
+                        public void call() {
+                                menu();
+                        }
+                });
+                return true;
+        }
+
+                @Override
         protected boolean canAttack( Char enemy ) {
                 return new Ballistica( pos, enemy.pos, Ballistica.MAGIC_BOLT).collisionPos == enemy.pos;
         }
@@ -107,8 +143,8 @@ public class LightOrb extends DirectableAlly {
                 next();
         }
 
-        public void call() {
-                next();
+        public void menu() {
+                GameScene.show(new WndOrbsManage());
         }
 
 
