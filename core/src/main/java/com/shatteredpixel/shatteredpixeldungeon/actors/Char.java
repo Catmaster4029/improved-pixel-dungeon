@@ -111,11 +111,15 @@ import com.shatteredpixel.shatteredpixeldungeon.plants.Earthroot;
 import com.shatteredpixel.shatteredpixeldungeon.plants.Swiftthistle;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
+import com.shatteredpixel.shatteredpixeldungeon.ui.RedButton;
+import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
 import com.shatteredpixel.shatteredpixeldungeon.utils.BArray;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
+import com.watabou.noosa.Game;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Bundlable;
 import com.watabou.utils.Bundle;
+import com.watabou.utils.Callback;
 import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
 
@@ -124,7 +128,7 @@ import java.util.HashSet;
 import java.util.LinkedHashSet;
 
 public abstract class Char extends Actor {
-	
+
 	public int pos = 0;
 	
 	public CharSprite sprite;
@@ -251,6 +255,60 @@ public abstract class Char extends Actor {
 		
 		return true;
 	}
+
+	public boolean lightorbmove(Char c){
+
+		//don't allow char to swap onto hazard unless they're flying
+		//you can swap onto a hazard though, as you're not the one instigating the swap
+		if (!Dungeon.level.passable[pos] && !c.flying){
+			return true;
+		}
+
+		//can't swap into a space without room
+		if (properties().contains(Property.LARGE) && !Dungeon.level.openSpace[c.pos]
+				|| c.properties().contains(Property.LARGE) && !Dungeon.level.openSpace[pos]){
+			return true;
+		}
+
+		int curPos = pos;
+
+		//warp instantly with allies in this case
+		if (c == Dungeon.hero && Dungeon.hero.hasTalent(Talent.ALLY_WARP)){
+			PathFinder.buildDistanceMap(c.pos, BArray.or(Dungeon.level.passable, Dungeon.level.avoid, null));
+			if (PathFinder.distance[pos] == Integer.MAX_VALUE){
+				return true;
+			}
+			ScrollOfTeleportation.appear(this, c.pos);
+			ScrollOfTeleportation.appear(c, curPos);
+			Dungeon.observe();
+			GameScene.updateFog();
+			return true;
+		}
+
+		//can't swap places if one char has restricted movement
+		if (rooted || c.rooted || buff(Vertigo.class) != null || c.buff(Vertigo.class) != null){
+			return true;
+		}
+
+		moveSprite( pos, c.pos );
+		move( c.pos );
+
+		c.sprite.move( c.pos, curPos );
+		c.move( curPos );
+
+		c.spend( 1 / c.speed() );
+
+		if (c == Dungeon.hero){
+			if (Dungeon.hero.subClass == HeroSubClass.FREERUNNER){
+				Buff.affect(Dungeon.hero, Momentum.class).gainStack();
+			}
+
+			Dungeon.hero.busy();
+		}
+
+		return true;
+	}
+
 
 
 	protected boolean moveSprite( int from, int to ) {
@@ -759,7 +817,7 @@ public abstract class Char extends Actor {
 	}
 
 	@Override
-	protected void spend( float time ) {
+	public void spend(float time) {
 
 		float timeScale = 1f;
 		if (buff( Slow.class ) != null) {
@@ -1024,4 +1082,9 @@ public abstract class Char extends Actor {
 	public static boolean hasProp( Char ch, Property p){
 		return (ch != null && ch.properties().contains(p));
 	}
+
+
 }
+
+
+

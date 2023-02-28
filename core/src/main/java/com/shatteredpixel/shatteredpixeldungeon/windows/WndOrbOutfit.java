@@ -1,21 +1,13 @@
 package com.shatteredpixel.shatteredpixeldungeon.windows;
 
-import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
-import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroAction;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
-import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.ui.RedButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
 import com.watabou.noosa.Game;
 import com.watabou.utils.Callback;
-import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 
-import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
-
-
-
-
-public class WndOrbsManage extends Window {
+public class WndOrbOutfit extends Window {
 
     private static final int WIDTH      = 120;
     private static final int BTN_HEIGHT = 20;
@@ -28,7 +20,7 @@ public class WndOrbsManage extends Window {
 
     public CharSprite sprite;
 
-    public WndOrbsManage() {
+    public WndOrbOutfit() {
 
         super();
 
@@ -36,7 +28,7 @@ public class WndOrbsManage extends Window {
         RedButton btnorb1 = new RedButton( Messages.get(this, "orb1") ) {
             @Override
             protected void onClick() {
-                GameScene.show(new WndOrbOutfit());
+
             }
 
         };
@@ -62,5 +54,4 @@ public class WndOrbsManage extends Window {
     }
 
 }
-
 
