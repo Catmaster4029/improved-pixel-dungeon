@@ -47,16 +47,13 @@ public class WndOrbOutfit extends Window {
             protected void onClick(){
 
             }
-            };
-
-        btnWand.setRect( 75, message.top() + message.height() , BTN_SIZE, BTN_SIZE );
-        add( btnWand );
-        btnWand.item(new WndBag.Placeholder(ItemSpriteSheet.WAND_HOLDER));
-        resize(WIDTH, 90);
         };
 
-
-
+        btnWand.setRect( 45, message.bottom() + 5, BTN_SIZE, BTN_SIZE );
+        add( btnWand );
+        btnWand.item(new WndBag.Placeholder(ItemSpriteSheet.WAND_HOLDER));
+        resize(WIDTH, 76);
+        }
     }
 
 
