@@ -61,6 +61,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.SpiritBow;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Dagger;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Gloves;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagesStaff;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Shortsword;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.WornShortsword;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.ThrowingKnife;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.ThrowingStone;
@@ -90,9 +91,16 @@ public enum HeroClass {
 
 		i = new Food();
 		if (!Challenges.isItemBlocked(i)) i.collect();
+
+		//cheats for debug
+
 		i = new TengusMask();
 		if (!Challenges.isItemBlocked(i)) i.collect();
 		i = new TengusMask();
+		if (!Challenges.isItemBlocked(i)) i.collect();
+		i = new Shortsword();
+		if (!Challenges.isItemBlocked(i)) i.collect();
+		i = new ScrollOfIdentify();
 		if (!Challenges.isItemBlocked(i)) i.collect();
 
 		new VelvetPouch().collect();
@@ -162,6 +170,7 @@ public enum HeroClass {
 		MagesStaff staff;
 
 		staff = new MagesStaff(new WandOfMagicMissile());
+
 
 		(hero.belongings.weapon = staff).identify();
 		hero.belongings.weapon.activate(hero);

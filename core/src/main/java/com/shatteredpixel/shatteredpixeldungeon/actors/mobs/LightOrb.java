@@ -1,36 +1,39 @@
-package com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs;
+package com.shatteredpixel.shatteredpixeldungeon.actors.mobs;
 
-import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.CorrosiveGas;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.ToxicGas;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AllyBuff;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AscensionChallenge;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Burning;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Degrade;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Light;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Warlock;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.YogFist;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Belongings;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ShadowParticle;
+import com.shatteredpixel.shatteredpixeldungeon.items.Item;
+import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.DriedRose;
+import com.shatteredpixel.shatteredpixeldungeon.items.bags.Bag;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfRetribution;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfPsionicBlast;
+import com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
+import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.LightOrbSprite;
 import com.shatteredpixel.shatteredpixeldungeon.ui.RedButton;
+import com.shatteredpixel.shatteredpixeldungeon.ui.RenderedTextBlock;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
-import com.shatteredpixel.shatteredpixeldungeon.windows.WndOrbOutfit;
+import com.shatteredpixel.shatteredpixeldungeon.windows.IconTitle;
+import com.shatteredpixel.shatteredpixeldungeon.windows.WndBag;
+import com.shatteredpixel.shatteredpixeldungeon.windows.WndBlacksmith;
 import com.watabou.noosa.Game;
-import com.watabou.noosa.audio.Sample;
 import com.watabou.noosa.tweeners.AlphaTweener;
 import com.watabou.utils.Callback;
 import com.watabou.utils.PathFinder;
@@ -39,6 +42,9 @@ import com.watabou.utils.Random;
 public class LightOrb extends Mob {
 
         private static final float TIME_TO_ZAP	= 1f;
+
+        private Wand wand = null;
+        private int orbID = 0;
 
         {
                 spriteClass = LightOrbSprite.class;
@@ -146,7 +152,7 @@ public class LightOrb extends Mob {
         }
 
         public void menu() {
-                GameScene.show(new WndOrbsManage());
+                GameScene.show(new WndOrbsManage(this));
         }
 
 
@@ -179,22 +185,18 @@ public class LightOrb extends Mob {
                 private static final int BTN_HEIGHT = 20;
                 private static final int GAP        = 2;
 
-                protected RedButton btnorb1;
-                protected RedButton btnorb2;
-
                 public int pos = 0;
 
                 public CharSprite sprite;
 
-                public WndOrbsManage() {
+                public WndOrbsManage(LightOrb orb) {
 
                         super();
-
 
                         RedButton btnorb1 = new RedButton( Messages.get(this, "orb1") ) {
                                 @Override
                                 protected void onClick() {
-                                        GameScene.show(new WndOrbOutfit());
+                                        GameScene.show(new WndOrbOutfit(orb));
                                 }
 
                         };
@@ -211,6 +213,89 @@ public class LightOrb extends Mob {
                         add( move );
 
                         resize( WIDTH, 42 );
+                }
+
+        }
+
+        public static class WndOrbOutfit extends Window {
+
+                private static final int WIDTH      = 120;
+                private static final int BTN_HEIGHT = 20;
+                private static final int GAP        = 2;
+                private static final int BTN_SIZE	= 32;
+
+                protected WndBlacksmith.ItemButton btnWand;
+
+                public int pos = 0;
+
+                public CharSprite sprite;
+
+                public WndOrbOutfit(LightOrb orb) {
+
+
+                        super();
+
+                        IconTitle titlebar = new IconTitle();
+                        titlebar.icon( new ItemSprite(ItemSpriteSheet.MAGES_STAFF));
+                        titlebar.label( Messages.get(this, "title") );
+                        titlebar.setRect( 0, 0, WIDTH, 0 );
+                        add( titlebar );
+
+                        RenderedTextBlock message =
+                                PixelScene.renderTextBlock(Messages.get(this, "desc"), 6);
+                        message.maxWidth( WIDTH );
+                        message.setPos(0, titlebar.bottom() + GAP);
+                        add( message );
+
+                        btnWand = new WndBlacksmith.ItemButton(){
+                                @Override
+                                protected void onClick(){
+                                        if (orb.wand != null)
+                                                item(new WndBag.Placeholder(ItemSpriteSheet.WEAPON_HOLDER));
+
+                                        else {
+                                                GameScene.selectItem(new WndBag.ItemSelector() {
+
+                                                        @Override
+                                                        public String textPrompt() {
+                                                                return Messages.get(LightOrb.WndOrbOutfit.class, "weapon_prompt");
+                                                        }
+
+                                                        @Override
+                                                        public Class<?extends Bag> preferredBag(){
+                                                                return Belongings.Backpack.class;
+                                                        }
+
+                                                        @Override
+                                                        public boolean itemSelectable(Item item) {
+                                                                return item instanceof MeleeWeapon;
+                                                        }
+
+                                                        @Override
+                                                        public void onSelect(Item item) {
+                                                                if (!(item instanceof MeleeWeapon)) {
+                                                                        //do nothing, should only happen when window is cancelled
+                                                                } else if (item.unique) {
+                                                                        GLog.w( Messages.get(LightOrb.WndOrbOutfit.class, "cant_unique"));
+                                                                        hide();
+                                                                } else if (!item.isIdentified()) {
+                                                                        GLog.w( Messages.get(LightOrb.WndOrbOutfit.class, "cant_unidentified"));
+                                                                        hide();
+                                                                } else if (item.cursed) {
+                                                                        GLog.w( Messages.get(LightOrb.WndOrbOutfit.class, "cant_cursed"));
+                                                                        hide();
+                                                                }
+
+                                                        }
+                                                });
+                                        }
+                                }
+                        };
+
+                        btnWand.setRect( 45, message.bottom() + 5, BTN_SIZE, BTN_SIZE );
+                        add( btnWand );
+                        btnWand.item(new WndBag.Placeholder(ItemSpriteSheet.WAND_HOLDER));
+                        resize(WIDTH, 76);
                 }
 
         }
