@@ -29,7 +29,6 @@ import com.shatteredpixel.shatteredpixeldungeon.ui.RedButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndOrbOutfit;
-import com.shatteredpixel.shatteredpixeldungeon.windows.WndOrbsManage;
 import com.watabou.noosa.Game;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.noosa.tweeners.AlphaTweener;
@@ -37,7 +36,7 @@ import com.watabou.utils.Callback;
 import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
 
-public class LightOrb extends DirectableAlly {
+public class LightOrb extends Mob {
 
         private static final float TIME_TO_ZAP	= 1f;
 
@@ -174,7 +173,7 @@ public class LightOrb extends DirectableAlly {
                 }
         }
 
-        public class WndOrbsManage extends Window {
+        public static class WndOrbsManage extends Window {
 
                 private static final int WIDTH      = 120;
                 private static final int BTN_HEIGHT = 20;
