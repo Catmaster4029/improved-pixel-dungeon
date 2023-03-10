@@ -2,6 +2,7 @@ package com.shatteredpixel.shatteredpixeldungeon.actors.mobs;
 
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.CorrosiveGas;
@@ -12,8 +13,10 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Light;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Belongings;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ShadowParticle;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
+import com.shatteredpixel.shatteredpixeldungeon.items.armor.Armor;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.DriedRose;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.Bag;
+import com.shatteredpixel.shatteredpixeldungeon.items.bags.MagicalHolster;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfRetribution;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfPsionicBlast;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand;
@@ -35,6 +38,7 @@ import com.shatteredpixel.shatteredpixeldungeon.windows.WndBag;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndBlacksmith;
 import com.watabou.noosa.Game;
 import com.watabou.noosa.tweeners.AlphaTweener;
+import com.watabou.utils.Bundle;
 import com.watabou.utils.Callback;
 import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
@@ -42,8 +46,8 @@ import com.watabou.utils.Random;
 public class LightOrb extends Mob {
 
         private static final float TIME_TO_ZAP	= 1f;
-
-        private Wand wand = null;
+        private LightOrb orb = null;
+        private static Wand wand = null;
         private int orbID = 0;
 
         {
@@ -156,6 +160,45 @@ public class LightOrb extends Mob {
         }
 
 
+        public String status() {
+                if (orb == null && orbID != 0){
+                        try {
+                                Actor a = Actor.findById(orbID);
+                                if (a != null) {
+                                        orb = (LightOrb) a;
+                                } else {
+                                        orbID = 0;
+                                }
+                        } catch ( ClassCastException e ){
+                                ShatteredPixelDungeon.reportException(e);
+                                orbID = 0;
+                        }
+                }
+                        return ((orb.HP*100) / orb.HT) + "%";
+                }
+
+
+        private static final String ORBID =       "orbID";
+        private static final String WAND =         "wand";
+
+        @Override
+        public void storeInBundle( Bundle bundle ) {
+                super.storeInBundle(bundle);
+
+                bundle.put( ORBID, orbID );
+
+                if (wand != null) bundle.put( WAND, wand );
+        }
+
+        @Override
+        public void restoreFromBundle( Bundle bundle ) {
+                super.restoreFromBundle(bundle);
+
+                orbID = bundle.getInt( ORBID );
+                if (bundle.contains(WAND)) wand = (Wand) bundle.get( WAND );
+        }
+
+
 
         public static void spawnNext( int pos ) {
                 for (int n : PathFinder.NEIGHBOURS2) {
@@ -251,30 +294,33 @@ public class LightOrb extends Mob {
                                 @Override
                                 protected void onClick(){
                                         if (orb.wand != null)
-                                                item(new WndBag.Placeholder(ItemSpriteSheet.WEAPON_HOLDER));
+                                                item(new WndBag.Placeholder(ItemSpriteSheet.WAND_HOLDER));
+                                                if (!orb.wand.doPickUp(Dungeon.hero)){
+                                                Dungeon.level.drop( orb.wand, Dungeon.hero.pos);
+                                                }
 
                                         else {
                                                 GameScene.selectItem(new WndBag.ItemSelector() {
 
                                                         @Override
                                                         public String textPrompt() {
-                                                                return Messages.get(LightOrb.WndOrbOutfit.class, "weapon_prompt");
+                                                                return Messages.get(LightOrb.WndOrbOutfit.class, "wandprompt");
                                                         }
 
                                                         @Override
                                                         public Class<?extends Bag> preferredBag(){
-                                                                return Belongings.Backpack.class;
+                                                                return MagicalHolster.class;
                                                         }
 
                                                         @Override
                                                         public boolean itemSelectable(Item item) {
-                                                                return item instanceof MeleeWeapon;
+                                                                return item instanceof Wand;
                                                         }
 
                                                         @Override
                                                         public void onSelect(Item item) {
-                                                                if (!(item instanceof MeleeWeapon)) {
-                                                                        //do nothing, should only happen when window is cancelled
+                                                                if (!(item instanceof Wand)) {
+
                                                                 } else if (item.unique) {
                                                                         GLog.w( Messages.get(LightOrb.WndOrbOutfit.class, "cant_unique"));
                                                                         hide();
@@ -285,16 +331,24 @@ public class LightOrb extends Mob {
                                                                         GLog.w( Messages.get(LightOrb.WndOrbOutfit.class, "cant_cursed"));
                                                                         hide();
                                                                 }
+                                                                else {
+                                                                        item.detach(Dungeon.hero.belongings.backpack);
+                                                                        LightOrb.wand = (Wand) item;
+                                                                        item(LightOrb.wand);
+                                                                }
 
                                                         }
                                                 });
                                         }
                                 }
                         };
-
+                        if (LightOrb.wand != null) {
+                                btnWand.item(LightOrb.wand);}
+                        else {
+                                btnWand.item(new WndBag.Placeholder(ItemSpriteSheet.WAND_HOLDER));
+                        }
                         btnWand.setRect( 45, message.bottom() + 5, BTN_SIZE, BTN_SIZE );
                         add( btnWand );
-                        btnWand.item(new WndBag.Placeholder(ItemSpriteSheet.WAND_HOLDER));
                         resize(WIDTH, 76);
                 }
 

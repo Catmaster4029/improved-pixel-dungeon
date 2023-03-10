@@ -905,7 +905,7 @@ public class DriedRose extends Artifact {
 							@Override
 							public void onSelect(Item item) {
 								if (!(item instanceof MeleeWeapon)) {
-									//do nothing, should only happen when window is cancelled
+
 								} else if (item.unique) {
 									GLog.w( Messages.get(WndGhostHero.class, "cant_unique"));
 									hide();
