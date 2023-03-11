@@ -90,6 +90,7 @@ public class LightOrb extends Mob {
 
         @Override
         public boolean interact(Char c) {
+                orbID = orb.id();
                 if (c != Dungeon.hero) {
                         return true;
                 }
@@ -222,7 +223,7 @@ public class LightOrb extends Mob {
                 }
         }
 
-        public static class WndOrbsManage extends Window {
+        public class WndOrbsManage extends Window {
 
                 private static final int WIDTH      = 120;
                 private static final int BTN_HEIGHT = 20;
@@ -250,12 +251,32 @@ public class LightOrb extends Mob {
                                 }
                         };
 
+//                        RedButton direct = new RedButton( Messages.get(this, "direct") ) {
+//                                @Override
+//                                protected void onClick() {
+//                                        if (orb == null && orbID != 0){
+//                                                Actor a = Actor.findById(orbID);
+//                                                if (a != null){
+//                                                        orb = (LightOrb)a;
+//                                                } else {
+//                                                        orbID = 0;
+//                                                }
+//                                        }
+//                                        if (orb != null) GameScene.selectCell(ghostDirector);
+
+//                                }
+
+
+//                        };
+
                         btnorb1.setRect( 0, GAP - 2 , WIDTH, BTN_HEIGHT );
                         move.setRect( 0, (int)btnorb1.bottom() + GAP, WIDTH, BTN_HEIGHT );
+//                        direct.setRect( 0, (int)move.bottom() + GAP, WIDTH, BTN_HEIGHT );
                         add( btnorb1 );
                         add( move );
+//                        add( direct );
 
-                        resize( WIDTH, 42 );
+                        resize( WIDTH, 64 );
                 }
 
         }
