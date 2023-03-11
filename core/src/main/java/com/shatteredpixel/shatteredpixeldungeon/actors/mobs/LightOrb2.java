@@ -10,19 +10,13 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.ToxicGas;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Burning;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Light;
-import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Belongings;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.DirectableAlly;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ShadowParticle;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
-import com.shatteredpixel.shatteredpixeldungeon.items.armor.Armor;
-import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.DriedRose;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.Bag;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.MagicalHolster;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfRetribution;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfPsionicBlast;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand;
-import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfBlastWave;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
@@ -31,6 +25,7 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.LightOrbSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.LightOrbSprite2;
 import com.shatteredpixel.shatteredpixeldungeon.ui.RedButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.RenderedTextBlock;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
@@ -45,15 +40,15 @@ import com.watabou.utils.Callback;
 import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
 
-public class LightOrb extends DirectableAlly {
+public class LightOrb2 extends Mob {
 
         private static final float TIME_TO_ZAP	= 1f;
-        private LightOrb orb = null;
+        private LightOrb2 orb2 = null;
         private static Wand wand = null;
-        private int orbID = 0;
+        private int orb2ID = 0;
 
         {
-                spriteClass = LightOrbSprite.class;
+                spriteClass = LightOrbSprite2.class;
 
                 HP = HT = 1 ;
                 defenseSkill = 1000;
@@ -68,7 +63,6 @@ public class LightOrb extends DirectableAlly {
                 immunities.add( Burning.class );
                 immunities.add( ScrollOfRetribution.class );
                 immunities.add( ScrollOfPsionicBlast.class );
-                immunities.add( Wand.class );
         }
 
         @Override
@@ -78,7 +72,7 @@ public class LightOrb extends DirectableAlly {
 
         @Override
         public int attackSkill( Char target ) {
-                return INFINITE_ACCURACY;
+                return 25;
         }
 
         @Override
@@ -98,8 +92,7 @@ public class LightOrb extends DirectableAlly {
                         public void call() {
                                 menu();
                         }
-                }
-                );
+                });
                 return true;
         }
 
@@ -138,6 +131,12 @@ public class LightOrb extends DirectableAlly {
                                 l.weaken(50);
                         }
 
+                        if (!enemy.isAlive() && enemy == Dungeon.hero) {
+                                Badges.validateDeathFromEnemyMagic();
+                                Dungeon.fail( getClass() );
+                                GLog.n( Messages.get(Char.class, "kill", name()) );
+                        }
+
                 } else {
 
                         enemy.sprite.showStatus( CharSprite.NEUTRAL,  enemy.defenseVerb() );
@@ -156,20 +155,20 @@ public class LightOrb extends DirectableAlly {
 
 
         public String status() {
-                if (orb == null && orbID != 0){
+                if (orb2 == null && orb2ID != 0){
                         try {
-                                Actor a = Actor.findById(orbID);
+                                Actor a = Actor.findById(orb2ID);
                                 if (a != null) {
-                                        orb = (LightOrb) a;
+                                        orb2 = (LightOrb2) a;
                                 } else {
-                                        orbID = 0;
+                                        orb2ID = 0;
                                 }
                         } catch ( ClassCastException e ){
                                 ShatteredPixelDungeon.reportException(e);
-                                orbID = 0;
+                                orb2ID = 0;
                         }
                 }
-                        return ((orb.HP*100) / orb.HT) + "%";
+                        return ((orb2.HP*100) / orb2.HT) + "%";
                 }
 
 
@@ -180,7 +179,7 @@ public class LightOrb extends DirectableAlly {
         public void storeInBundle( Bundle bundle ) {
                 super.storeInBundle(bundle);
 
-                bundle.put( ORBID, orbID );
+                bundle.put( ORBID, orb2ID );
 
                 if (wand != null) bundle.put( WAND, wand );
         }
@@ -189,21 +188,21 @@ public class LightOrb extends DirectableAlly {
         public void restoreFromBundle( Bundle bundle ) {
                 super.restoreFromBundle(bundle);
 
-                orbID = bundle.getInt( ORBID );
+                orb2ID = bundle.getInt( ORBID );
                 if (bundle.contains(WAND)) wand = (Wand) bundle.get( WAND );
         }
 
 
 
         public static void spawnNext( int pos ) {
-                for (int n : PathFinder.LEFT) {
+                for (int n : PathFinder.RIGHT) {
                         spawnAtOrb(pos + n);
                 }
         }
-        public static LightOrb spawnAtOrb(int pos ) {
+        public static LightOrb2 spawnAtOrb(int pos ) {
                 if ((!Dungeon.level.solid[pos] || Dungeon.level.passable[pos]) && Actor.findChar( pos ) == null) {
 
-                        LightOrb w = new LightOrb();
+                        LightOrb2 w = new LightOrb2();
                         w.pos = pos;
                         Dungeon.level.occupyCell(w);
                         GameScene.add( w );
@@ -227,14 +226,14 @@ public class LightOrb extends DirectableAlly {
 
                 public CharSprite sprite;
 
-                public WndOrbsManage(LightOrb orb) {
+                public WndOrbsManage(LightOrb2 orb2) {
 
                         super();
 
                         RedButton btnorb1 = new RedButton( Messages.get(this, "orb1") ) {
                                 @Override
                                 protected void onClick() {
-                                        GameScene.show(new WndOrbOutfit(orb));
+                                        GameScene.show(new WndOrbOutfit(orb2));
                                 }
 
                         };
@@ -288,7 +287,7 @@ public class LightOrb extends DirectableAlly {
 
                 public CharSprite sprite;
 
-                public WndOrbOutfit(LightOrb orb) {
+                public WndOrbOutfit(LightOrb2 orb2) {
 
 
                         super();
@@ -308,10 +307,11 @@ public class LightOrb extends DirectableAlly {
                         btnWand = new WndBlacksmith.ItemButton(){
                                 @Override
                                 protected void onClick(){
-                                        if (orb.wand != null) {
+                                        if
+                                        (orb2.wand != null) {
                                                 item(new WndBag.Placeholder(ItemSpriteSheet.WAND_HOLDER));
-                                                if (!orb.wand.doPickUp(Dungeon.hero)){
-                                                Dungeon.level.drop( orb.wand, Dungeon.hero.pos);
+                                                if (!orb2.wand.doPickUp(Dungeon.hero)){
+                                                Dungeon.level.drop( orb2.wand, Dungeon.hero.pos);
                                                 }}
 
                                         else {
@@ -319,7 +319,7 @@ public class LightOrb extends DirectableAlly {
 
                                                         @Override
                                                         public String textPrompt() {
-                                                                return Messages.get(LightOrb.WndOrbOutfit.class, "wandprompt");
+                                                                return Messages.get(LightOrb2.WndOrbOutfit.class, "wandprompt");
                                                         }
 
                                                         @Override
@@ -337,19 +337,19 @@ public class LightOrb extends DirectableAlly {
                                                                 if (!(item instanceof Wand)) {
 
                                                                 } else if (item.unique) {
-                                                                        GLog.w( Messages.get(LightOrb.WndOrbOutfit.class, "cant_unique"));
+                                                                        GLog.w( Messages.get(LightOrb2.WndOrbOutfit.class, "cant_unique"));
                                                                         hide();
                                                                 } else if (!item.isIdentified()) {
-                                                                        GLog.w( Messages.get(LightOrb.WndOrbOutfit.class, "cant_unidentified"));
+                                                                        GLog.w( Messages.get(LightOrb2.WndOrbOutfit.class, "cant_unidentified"));
                                                                         hide();
                                                                 } else if (item.cursed) {
-                                                                        GLog.w( Messages.get(LightOrb.WndOrbOutfit.class, "cant_cursed"));
+                                                                        GLog.w( Messages.get(LightOrb2.WndOrbOutfit.class, "cant_cursed"));
                                                                         hide();
                                                                 }
                                                                 else {
                                                                         item.detach(Dungeon.hero.belongings.backpack);
-                                                                        LightOrb.wand = (Wand) item;
-                                                                        item(LightOrb.wand);
+                                                                        LightOrb2.wand = (Wand) item;
+                                                                        item(LightOrb2.wand);
                                                                 }
 
                                                         }
@@ -357,8 +357,8 @@ public class LightOrb extends DirectableAlly {
                                         }
                                 }
                         };
-                        if (LightOrb.wand != null) {
-                                btnWand.item(LightOrb.wand);}
+                        if (LightOrb2.wand != null) {
+                                btnWand.item(LightOrb2.wand);}
                         else {
                                 btnWand.item(new WndBag.Placeholder(ItemSpriteSheet.WAND_HOLDER));
                         }
