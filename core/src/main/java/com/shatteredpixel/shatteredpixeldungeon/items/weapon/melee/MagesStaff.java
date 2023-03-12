@@ -114,7 +114,7 @@ public class MagesStaff extends MeleeWeapon {
 			actions.add( AC_ZAP );
 		}
 		if (Dungeon.hero.subClass == HeroSubClass.LIGHTBENDER){
-			actions.add(AC_ORBS);
+//			actions.add(AC_ORBS);
 		}
 		return actions;
 	}

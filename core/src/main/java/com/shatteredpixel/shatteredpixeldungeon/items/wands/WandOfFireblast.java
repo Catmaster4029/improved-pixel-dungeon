@@ -32,6 +32,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Burning;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Cripple;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Paralysis;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.mage.WildMagic;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.LightOrb;
 import com.shatteredpixel.shatteredpixeldungeon.effects.MagicMissile;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Blazing;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagesStaff;
@@ -213,6 +214,61 @@ public class WandOfFireblast extends DamageWand {
 		particle.acc.set(0, -40);
 		particle.setSize( 0f, 3f);
 		particle.shuffleXY( 1.5f );
+	}
+
+	@Override
+	public void lightorbwand(LightOrb orb, Ballistica bolt){
+
+		ArrayList<Char> affectedChars = new ArrayList<>();
+		ArrayList<Integer> adjacentCells = new ArrayList<>();
+		for( int cell : cone.cells ){
+
+			//ignore caster cell
+			if (cell == bolt.sourcePos){
+				continue;
+			}
+
+			//knock doors open
+			if (Dungeon.level.map[cell] == Terrain.DOOR){
+				Level.set(cell, Terrain.OPEN_DOOR);
+				GameScene.updateMap(cell);
+			}
+
+			//only ignite cells directly near caster if they are flammable or solid
+			if (Dungeon.level.adjacent(bolt.sourcePos, cell)
+					&& !(Dungeon.level.flamable[cell] || Dungeon.level.solid[cell])){
+				adjacentCells.add(cell);
+				//do burn any heaps located here though
+				if (Dungeon.level.heaps.get(cell) != null){
+					Dungeon.level.heaps.get(cell).burn();
+				}
+			} else {
+				GameScene.add( Blob.seed( cell, 1+chargesPerCast(), Fire.class ) );
+			}
+
+			Char ch = Actor.findChar( cell );
+			if (ch != null) {
+				affectedChars.add(ch);
+			}
+		}
+
+		//if wand was shot right at a wall
+		if (cone.cells.isEmpty()){
+			adjacentCells.add(bolt.sourcePos);
+		}
+
+		//ignite cells that share a side with an adjacent cell, are flammable, and are closer to the collision pos
+		//This prevents short-range casts not igniting barricades or bookshelves
+		for (int cell : adjacentCells){
+			for (int i : PathFinder.NEIGHBOURS8){
+				if (Dungeon.level.trueDistance(cell+i, bolt.collisionPos) < Dungeon.level.trueDistance(cell, bolt.collisionPos)
+						&& Dungeon.level.flamable[cell+i]
+						&& Fire.volumeAt(cell+i, Fire.class) == 0){
+					GameScene.add( Blob.seed( cell+i, 1+chargesPerCast(), Fire.class ) );
+				}
+			}
+		}
+
 	}
 
 }
