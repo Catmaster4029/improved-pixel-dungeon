@@ -1,7 +1,5 @@
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs;
 
-import static com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand.zapper;
-
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
@@ -14,7 +12,6 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Light;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Belongings;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.DirectableAlly;
-import com.shatteredpixel.shatteredpixeldungeon.effects.MagicMissile;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ShadowParticle;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.Armor;
@@ -25,11 +22,6 @@ import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfRetributio
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfPsionicBlast;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfBlastWave;
-import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfCorrosion;
-import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfCorruption;
-import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfFireblast;
-import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfFrost;
-import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfMagicMissile;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
@@ -113,13 +105,10 @@ public class LightOrb extends DirectableAlly {
 
                 @Override
         protected boolean canAttack( Char enemy ) {
-
-                        return new Ballistica( pos, enemy.pos, Ballistica.MAGIC_BOLT).collisionPos == enemy.pos;
-
+                return new Ballistica( pos, enemy.pos, Ballistica.MAGIC_BOLT).collisionPos == enemy.pos;
         }
 
-
-        protected boolean doAttack(Char enemy ) {
+        protected boolean doAttack( Char enemy ) {
 
                 if (Dungeon.level.adjacent( pos, enemy.pos )) {
 
@@ -137,19 +126,23 @@ public class LightOrb extends DirectableAlly {
                 }
         }
         protected void zap() {
-                if (LightOrb.wand != null ){
-                        Wand.lightorbwand( this );
-                }
-                else {
-                        spend(1f);
-                        Invisibility.dispel(this);
-                        if (hit(this, enemy, true)) {
-                                enemy.damage(Random.NormalIntRange(10, 20), new YogFist.DarkFist.DarkBolt());
+                spend( 1f );
 
-                        } else {
-                                enemy.sprite.showStatus(CharSprite.NEUTRAL, enemy.defenseVerb());
+                Invisibility.dispel(this);
+                if (hit( this, enemy, true )) {
+
+                        enemy.damage( Random.NormalIntRange(10, 20), new YogFist.DarkFist.DarkBolt() );
+
+                        Light l = enemy.buff(Light.class);
+                        if (l != null){
+                                l.weaken(50);
                         }
+
+                } else {
+
+                        enemy.sprite.showStatus( CharSprite.NEUTRAL,  enemy.defenseVerb() );
                 }
+
         }
 
         public void onZapComplete() {
@@ -252,21 +245,30 @@ public class LightOrb extends DirectableAlly {
                                 }
                         };
 
-                        RedButton direct = new RedButton( Messages.get(this, "direct") ) {
-                                @Override
-                                protected void onClick() {
-                                        zap();
-                                }
+//                        RedButton direct = new RedButton( Messages.get(this, "direct") ) {
+//                                @Override
+//                                protected void onClick() {
+//                                        if (orb == null && orbID != 0){
+//                                                Actor a = Actor.findById(orbID);
+//                                                if (a != null){
+//                                                        orb = (LightOrb)a;
+//                                                } else {
+//                                                        orbID = 0;
+//                                                }
+//                                        }
+//                                        if (orb != null) GameScene.selectCell(ghostDirector);
+
+//                                }
 
 
-                        };
+//                        };
 
                         btnorb1.setRect( 0, GAP - 2 , WIDTH, BTN_HEIGHT );
                         move.setRect( 0, (int)btnorb1.bottom() + GAP, WIDTH, BTN_HEIGHT );
-                        direct.setRect( 0, (int)move.bottom() + GAP, WIDTH, BTN_HEIGHT );
+//                        direct.setRect( 0, (int)move.bottom() + GAP, WIDTH, BTN_HEIGHT );
                         add( btnorb1 );
                         add( move );
-                         add( direct );
+//                        add( direct );
 
                         resize( WIDTH, 64 );
                 }
@@ -276,6 +278,7 @@ public class LightOrb extends DirectableAlly {
         public static class WndOrbOutfit extends Window {
 
                 private static final int WIDTH      = 120;
+                private static final int BTN_HEIGHT = 20;
                 private static final int GAP        = 2;
                 private static final int BTN_SIZE	= 32;
 

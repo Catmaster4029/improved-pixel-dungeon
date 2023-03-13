@@ -39,7 +39,6 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroSubClass;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.mage.WildMagic;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.LightOrb;
 import com.shatteredpixel.shatteredpixeldungeon.effects.MagicMissile;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TalismanOfForesight;
@@ -386,10 +385,6 @@ public abstract class Wand extends Item {
 		particle.radiateXY(0.5f);
 	}
 
-	public void lightorbwand(LightOrb orb, Ballistica bolt){
-
-	}
-
 	protected void wandUsed() {
 		if (!isIdentified()) {
 			float uses = Math.min( availableUsesToID, Talent.itemIDSpeedFactor(Dungeon.hero, this) );
@@ -578,7 +573,7 @@ public abstract class Wand extends Item {
 		}
 	}
 	
-		public static CellSelector.Listener zapper = new  CellSelector.Listener() {
+	protected static CellSelector.Listener zapper = new  CellSelector.Listener() {
 		
 		@Override
 		public void onSelect( Integer target ) {
