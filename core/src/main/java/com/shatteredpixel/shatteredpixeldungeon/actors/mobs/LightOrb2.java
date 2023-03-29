@@ -307,12 +307,12 @@ public class LightOrb2 extends Mob {
                         btnWand = new WndBlacksmith.ItemButton(){
                                 @Override
                                 protected void onClick(){
-                                        if
-                                        (orb2.wand != null) {
-                                                item(new WndBag.Placeholder(ItemSpriteSheet.WAND_HOLDER));
-                                                if (!orb2.wand.doPickUp(Dungeon.hero)){
-                                                Dungeon.level.drop( orb2.wand, Dungeon.hero.pos);
-                                                }}
+                                        if (orb2.wand != null) {
+                                                item(new WndBag.Placeholder(ItemSpriteSheet.ARMOR_HOLDER));
+                                                if (!LightOrb2.wand.doPickUp(Dungeon.hero)){
+                                                        Dungeon.level.drop( LightOrb2.wand, Dungeon.hero.pos);
+                                                }
+                                                LightOrb2.wand = null;}
 
                                         else {
                                                 GameScene.selectItem(new WndBag.ItemSelector() {

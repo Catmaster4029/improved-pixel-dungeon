@@ -99,16 +99,16 @@ public class LightOrb extends DirectableAlly {
         @Override
         public boolean interact(Char c) {
                 Game.runOnRenderThread(new Callback() {
-                        @Override
-                        public void call() {
-                                menu();
-                        }
-                }
+                                               @Override
+                                               public void call() {
+                                                       menu();
+                                               }
+                                       }
                 );
                 return true;
         }
 
-                @Override
+        @Override
         protected boolean canAttack( Char enemy ) {
                 return new Ballistica( pos, enemy.pos, Ballistica.MAGIC_BOLT).collisionPos == enemy.pos;
         }
@@ -178,8 +178,8 @@ public class LightOrb extends DirectableAlly {
                                 orbID = 0;
                         }
                 }
-                        return ((orb.HP*100) / orb.HT) + "%";
-                }
+                return ((orb.HP*100) / orb.HT) + "%";
+        }
 
 
         private static final String ORBID =       "orbID";
@@ -320,7 +320,7 @@ public class LightOrb extends DirectableAlly {
                                         if (orb.wand != null) {
                                                 item(new WndBag.Placeholder(ItemSpriteSheet.WAND_HOLDER));
                                                 if (!orb.wand.doPickUp(Dungeon.hero)){
-                                                Dungeon.level.drop( orb.wand, Dungeon.hero.pos);
+                                                        Dungeon.level.drop( orb.wand, Dungeon.hero.pos);
                                                 }}
 
                                         else {
@@ -385,4 +385,3 @@ public class LightOrb extends DirectableAlly {
 
 
 }
-

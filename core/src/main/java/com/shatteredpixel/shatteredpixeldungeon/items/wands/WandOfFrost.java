@@ -148,6 +148,8 @@ public class WandOfFrost extends DamageWand {
 		}
 	}
 
+
+
 	@Override
 	public void staffFx(MagesStaff.StaffParticle particle) {
 		particle.color(0x88CCFF);

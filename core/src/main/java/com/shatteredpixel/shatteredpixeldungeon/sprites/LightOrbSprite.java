@@ -5,6 +5,9 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.LightOrb;
 import com.shatteredpixel.shatteredpixeldungeon.effects.MagicMissile;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ShaftParticle;
+import com.shatteredpixel.shatteredpixeldungeon.items.wands.DamageWand;
+import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfFrost;
+import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfMagicMissile;
 import com.watabou.glwrap.Blending;
 import com.watabou.noosa.TextureFilm;
 import com.watabou.noosa.audio.Sample;
@@ -48,25 +51,57 @@ public class LightOrbSprite extends MobSprite {
         emitter().start( Speck.factory( Speck.LIGHT ), 0.2f, 3 );
     }
 
+
+
     @Override
     public int blood() {
         return 0xFFFFFF;
     }
     public void zap( int cell ) {
 
-        super.zap( cell );
+        if (LightOrb.wand instanceof WandOfMagicMissile){
+            super.zap( cell );
+            MagicMissile.boltFromChar( parent,
+                    MagicMissile.MAGIC_MISSILE,
+                    this,
+                    cell,
+                    new Callback() {
+                        @Override
+                        public void call() {
+                            ((LightOrb)ch).onZapComplete();
+                        }
+                    } );
+            Sample.INSTANCE.play( Assets.Sounds.ZAP );
+        }
+        if (LightOrb.wand instanceof WandOfFrost){
+            super.zap( cell );
+            MagicMissile.boltFromChar( parent,
+                    MagicMissile.FROST,
+                    this,
+                    cell,
+                    new Callback() {
+                        @Override
+                        public void call() {
+                            ((LightOrb)ch).onZapComplete();
+                        }
+                    } );
+            Sample.INSTANCE.play( Assets.Sounds.ZAP );
+        }
+        else {
+            super.zap( cell );
+            MagicMissile.boltFromChar( parent,
+                    MagicMissile.RAINBOW,
+                    this,
+                    cell,
+                    new Callback() {
+                        @Override
+                        public void call() {
+                            ((LightOrb)ch).onZapComplete();
+                        }
+                    } );
+            Sample.INSTANCE.play( Assets.Sounds.ZAP );
+        }
 
-        MagicMissile.boltFromChar( parent,
-                MagicMissile.BEACON,
-                this,
-                cell,
-                new Callback() {
-                    @Override
-                    public void call() {
-                        ((LightOrb)ch).onZapComplete();
-                    }
-                } );
-        Sample.INSTANCE.play( Assets.Sounds.ZAP );
     }
 }
 
