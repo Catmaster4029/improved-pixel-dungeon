@@ -88,7 +88,7 @@ public class LightOrbSprite extends MobSprite {
                     } );
             Sample.INSTANCE.play( Assets.Sounds.ZAP );
         }
-        if (LightOrb.wand instanceof WandOfFrost){
+        else if (LightOrb.wand instanceof WandOfFrost){
             super.zap( cell );
             MagicMissile.boltFromChar( parent,
                     MagicMissile.FROST,
@@ -102,7 +102,7 @@ public class LightOrbSprite extends MobSprite {
                     } );
             Sample.INSTANCE.play( Assets.Sounds.ZAP );
         }
-        if (LightOrb.wand instanceof WandOfFireblast){
+        else if (LightOrb.wand instanceof WandOfFireblast){
             super.zap( cell );
             MagicMissile.boltFromChar( parent,
                     MagicMissile.FIRE,
@@ -116,7 +116,7 @@ public class LightOrbSprite extends MobSprite {
                     } );
             Sample.INSTANCE.play( Assets.Sounds.ZAP );
         }
-        if (LightOrb.wand instanceof WandOfDisintegration){
+        else if (LightOrb.wand instanceof WandOfDisintegration){
             super.zap( cell );
             parent.add(new Beam.DeathRay(center(), DungeonTilemap.raisedTileCenterToWorld( cell )));
             new Callback() {
@@ -127,7 +127,7 @@ public class LightOrbSprite extends MobSprite {
             };
             Sample.INSTANCE.play( Assets.Sounds.ZAP );
         }
-        if (LightOrb.wand instanceof WandOfCorrosion){
+        else if (LightOrb.wand instanceof WandOfCorrosion){
             super.zap( cell );
             MagicMissile.boltFromChar( parent,
                     MagicMissile.CORROSION,
@@ -141,7 +141,7 @@ public class LightOrbSprite extends MobSprite {
                     } );
             Sample.INSTANCE.play( Assets.Sounds.ZAP );
         }
-        if (LightOrb.wand instanceof WandOfBlastWave){
+        else if (LightOrb.wand instanceof WandOfBlastWave){
             super.zap( cell );
             MagicMissile.boltFromChar( parent,
                     MagicMissile.FORCE,
@@ -155,7 +155,7 @@ public class LightOrbSprite extends MobSprite {
                     } );
             Sample.INSTANCE.play( Assets.Sounds.ZAP );
         }
-        if (LightOrb.wand instanceof WandOfCorruption){
+        else if (LightOrb.wand instanceof WandOfCorruption){
             super.zap( cell );
             MagicMissile.boltFromChar( parent,
                     MagicMissile.SHADOW,
@@ -169,12 +169,12 @@ public class LightOrbSprite extends MobSprite {
                     } );
             Sample.INSTANCE.play( Assets.Sounds.ZAP );
         }
-        if (LightOrb.wand instanceof WandOfLightning){
+        else if (LightOrb.wand instanceof WandOfLightning){
             super.zap( cell );
             parent.add( new Lightning.Arc(center(), ch.sprite.center()));
             Sample.INSTANCE.play( Assets.Sounds.ZAP );
         }
-        if (LightOrb.wand instanceof WandOfTransfusion){
+        else if (LightOrb.wand instanceof WandOfTransfusion){
             super.zap( cell );
             parent.add(new Beam.HealthRay(center(), DungeonTilemap.raisedTileCenterToWorld( cell )));
             new Callback() {
@@ -185,7 +185,7 @@ public class LightOrbSprite extends MobSprite {
             };
             Sample.INSTANCE.play( Assets.Sounds.ZAP );
             }
-        if (LightOrb.wand instanceof WandOfLivingEarth){
+        else if (LightOrb.wand instanceof WandOfLivingEarth){
             super.zap( cell );
             MagicMissile.boltFromChar( parent,
                     MagicMissile.EARTH,
@@ -199,7 +199,7 @@ public class LightOrbSprite extends MobSprite {
                     } );
             Sample.INSTANCE.play( Assets.Sounds.ZAP );
         }
-        if (LightOrb.wand instanceof WandOfRegrowth){
+        else if (LightOrb.wand instanceof WandOfRegrowth){
             super.zap( cell );
             MagicMissile.boltFromChar( parent,
                     MagicMissile.FOLIAGE_CONE,
@@ -213,7 +213,7 @@ public class LightOrbSprite extends MobSprite {
                     } );
             Sample.INSTANCE.play( Assets.Sounds.ZAP );
         }
-        if (LightOrb.wand instanceof WandOfWarding){
+        else if (LightOrb.wand instanceof WandOfWarding){
             super.zap( cell );
             MagicMissile.boltFromChar( parent,
                     MagicMissile.WARD,
@@ -227,7 +227,7 @@ public class LightOrbSprite extends MobSprite {
                     } );
             Sample.INSTANCE.play( Assets.Sounds.ZAP );
         }
-        if (LightOrb.wand instanceof WandOfPrismaticLight){
+        else if (LightOrb.wand instanceof WandOfPrismaticLight){
             super.zap( cell );
             parent.add(new Beam.LightRay(center(), DungeonTilemap.raisedTileCenterToWorld( cell )));
             new Callback() {
@@ -238,9 +238,6 @@ public class LightOrbSprite extends MobSprite {
             };
             Sample.INSTANCE.play( Assets.Sounds.ZAP );
         }
-
-
-
         else {
             super.zap( cell );
             MagicMissile.boltFromChar( parent,

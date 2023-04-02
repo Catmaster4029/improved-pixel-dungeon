@@ -151,34 +151,24 @@ public class LightOrb extends DirectableAlly {
                                                 damagerollmax = (int)Math.round(damagerollmax * Math.pow(0.9333f, chillturns));
                                                 damagerollmin = (int)Math.round(damagerollmin * Math.pow(0.9333f, chillturns));
                                         }
-                                        if (enemy.buff(Frost.class) != null){
-                                                damagerollmax = 0;
-                                                damagerollmin = 0;
-                                        }
                                 }
                         }
                 }
 
                 spend( 1f );
                 Invisibility.dispel(this);
-                if (hit( this, enemy, true ) || (LightOrb.wand instanceof WandOfFrost)) {
+                if (hit( this, enemy, true ) && (LightOrb.wand instanceof WandOfFrost)) {
                         enemy.damage( Random.NormalIntRange(damagerollmin, damagerollmax), new YogFist.DarkFist.DarkBolt() );
                         Sample.INSTANCE.play( Assets.Sounds.HIT_MAGIC, 1, Random.Float(0.87f, 1.15f) );
-                        if (Dungeon.level.water[enemy.pos])
-                                Buff.affect(enemy, Chill.class, 4+wandlevel);
-                        else
-                                Buff.affect(enemy, Chill.class, 2+wandlevel);
-
+                        //if (Dungeon.level.water[enemy.pos])
+                        //        Buff.affect(enemy, Chill.class, 4+wandlevel);
+                        //else
+                         //       Buff.affect(enemy, Chill.class, 2+wandlevel);
                 }
 
-
-
-                if (hit( this, enemy, true ) || (LightOrb.wand instanceof WandOfMagicMissile)) {
+                if (hit( this, enemy, true ) && (LightOrb.wand instanceof WandOfMagicMissile)) {
                         enemy.damage( Random.NormalIntRange(damagerollmin, damagerollmax), new YogFist.DarkFist.DarkBolt() );
                         Sample.INSTANCE.play( Assets.Sounds.HIT_MAGIC, 1, Random.Float(0.87f, 1.15f) );
-                }
-                else {
-                        enemy.sprite.showStatus( CharSprite.NEUTRAL,  enemy.defenseVerb() );
                 }
 
         }
@@ -347,7 +337,7 @@ public class LightOrb extends DirectableAlly {
                                 @Override
                                 protected void onClick(){
                                         if (LightOrb.wand != null){
-                                                item(new WndBag.Placeholder(ItemSpriteSheet.WEAPON_HOLDER));
+                                                item(new WndBag.Placeholder(ItemSpriteSheet.WAND_HOLDER));
                                                 if (!LightOrb.wand.doPickUp(Dungeon.hero)){
                                                         Dungeon.level.drop( LightOrb.wand, Dungeon.hero.pos);
                                                 }
@@ -390,9 +380,6 @@ public class LightOrb extends DirectableAlly {
                                                                         item.detach(Dungeon.hero.belongings.backpack);
                                                                         LightOrb.wand = (Wand) item;
                                                                         item(LightOrb.wand);
-                                                                }
-                                                                if ((item instanceof Wand)) {
-                                                                        LightOrb.wand = null;
                                                                 }
 
                                                         }

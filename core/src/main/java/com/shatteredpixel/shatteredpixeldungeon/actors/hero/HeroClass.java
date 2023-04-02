@@ -112,7 +112,16 @@ public enum HeroClass {
 		if (!Challenges.isItemBlocked(i)) i.collect();
 		i = new WandOfDisintegration();
 		if (!Challenges.isItemBlocked(i)) i.collect();
-
+		i = new TengusMask();
+		if (!Challenges.isItemBlocked(i)) i.collect();
+		i = new ScrollOfIdentify();
+		if (!Challenges.isItemBlocked(i)) i.collect();
+		i = new ScrollOfIdentify();
+		if (!Challenges.isItemBlocked(i)) i.collect();
+		i = new ScrollOfIdentify();
+		if (!Challenges.isItemBlocked(i)) i.collect();
+		i = new ScrollOfUpgrade();
+		if (!Challenges.isItemBlocked(i)) i.collect();
 
 
 		new VelvetPouch().collect();
