@@ -62,8 +62,10 @@ import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfMagicMappi
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfRage;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfUpgrade;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfBlastWave;
+import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfDisintegration;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfFireblast;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfFrost;
+import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfLightning;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfMagicMissile;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.SpiritBow;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Dagger;
@@ -104,76 +106,14 @@ public enum HeroClass {
 
 		i = new MeatPie();
 		if (!Challenges.isItemBlocked(i)) i.collect();
-		i = new MeatPie();
+		i = new WandOfFrost();
 		if (!Challenges.isItemBlocked(i)) i.collect();
-		i = new MeatPie();
+		i = new WandOfLightning();
 		if (!Challenges.isItemBlocked(i)) i.collect();
-
-		i = new Shuriken();
-		if (!Challenges.isItemBlocked(i)) i.collect();
-		i = new Shuriken();
-		if (!Challenges.isItemBlocked(i)) i.collect();
-		i = new Tomahawk();
-		if (!Challenges.isItemBlocked(i)) i.collect();
-		i = new Tomahawk();
-		if (!Challenges.isItemBlocked(i)) i.collect();
-		i = new Tomahawk();
-		if (!Challenges.isItemBlocked(i)) i.collect();
-		i = new Tomahawk();
-		if (!Challenges.isItemBlocked(i)) i.collect();
-		i = new Tomahawk();
-		if (!Challenges.isItemBlocked(i)) i.collect();
-		i = new ScrollOfUpgrade();
-		if (!Challenges.isItemBlocked(i)) i.collect();
-		i = new ScrollOfUpgrade();
-		if (!Challenges.isItemBlocked(i)) i.collect();
-		i = new ScrollOfUpgrade();
+		i = new WandOfDisintegration();
 		if (!Challenges.isItemBlocked(i)) i.collect();
 
-		//cheats for debug
 
-		//i = new TengusMask();
-		//if (!Challenges.isItemBlocked(i)) i.collect();
-		//i = new TengusMask();
-		//if (!Challenges.isItemBlocked(i)) i.collect();
-		//i = new Shortsword();
-		//if (!Challenges.isItemBlocked(i)) i.collect();
-		//i = new ScrollOfIdentify();
-		//if (!Challenges.isItemBlocked(i)) i.collect();
-		//i = new ScrollOfIdentify();
-		//if (!Challenges.isItemBlocked(i)) i.collect();
-		//i = new ScrollOfIdentify();
-		//if (!Challenges.isItemBlocked(i)) i.collect();
-		//i = new ScrollOfIdentify();
-		//if (!Challenges.isItemBlocked(i)) i.collect();
-		//i = new ScrollOfIdentify();
-		//if (!Challenges.isItemBlocked(i)) i.collect();
-		//i = new ScrollOfIdentify();
-		//if (!Challenges.isItemBlocked(i)) i.collect();
-		//i = new ScrollOfIdentify();
-		//if (!Challenges.isItemBlocked(i)) i.collect();
-		//i = new ScrollOfIdentify();
-		//if (!Challenges.isItemBlocked(i)) i.collect();
-		//i = new ScrollOfIdentify();
-		//if (!Challenges.isItemBlocked(i)) i.collect();
-		//i = new ScrollOfIdentify();
-		//if (!Challenges.isItemBlocked(i)) i.collect();
-		//i = new ScrollOfIdentify();
-		//if (!Challenges.isItemBlocked(i)) i.collect();
-
-
-		//i = new WandOfFireblast();
-		//if (!Challenges.isItemBlocked(i)) i.collect();
-		//i = new MagicalHolster();
-		//if (!Challenges.isItemBlocked(i)) i.collect();
-		//i = new WandOfFrost();
-		//if (!Challenges.isItemBlocked(i)) i.collect();
-		//i = new WandOfMagicMissile();
-		//if (!Challenges.isItemBlocked(i)) i.collect();
-		//i = new DriedRose();
-		//if (!Challenges.isItemBlocked(i)) i.collect();
-		//i = new DriedRose();
-		//if (!Challenges.isItemBlocked(i)) i.collect();
 
 		new VelvetPouch().collect();
 		Dungeon.LimitedDrops.VELVET_POUCH.drop();

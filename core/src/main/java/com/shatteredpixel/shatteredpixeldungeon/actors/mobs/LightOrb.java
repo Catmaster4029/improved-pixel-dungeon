@@ -8,7 +8,10 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.CorrosiveGas;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.ToxicGas;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Burning;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Chill;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Frost;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Light;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Belongings;
@@ -25,6 +28,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.wands.DamageWand;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfBlastWave;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfCorruption;
+import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfFrost;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfMagicMissile;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
@@ -54,7 +58,7 @@ public class LightOrb extends DirectableAlly {
 
         private static final float TIME_TO_ZAP	= 1f;
         private LightOrb orb = null;
-        private static Wand wand = null;
+        public static Wand wand = null;
         private int orbID = 0;
 
         {
@@ -133,22 +137,47 @@ public class LightOrb extends DirectableAlly {
         protected void zap() {
                 int damagerollmax = 0;
                 int damagerollmin = 0;
+                int wandlevel = 0;
                 if (LightOrb.wand != null) {
+                        wandlevel = (LightOrb.wand).level();
                         if (LightOrb.wand instanceof DamageWand){
                                 damagerollmin = ((DamageWand) LightOrb.wand).min();
                                 damagerollmax = ((DamageWand) LightOrb.wand).max();
+                                if (LightOrb.wand instanceof WandOfFrost) {
+                                        damagerollmin = ((DamageWand) LightOrb.wand).min();
+                                        damagerollmax = ((DamageWand) LightOrb.wand).max();
+                                        if (enemy.buff(Chill.class) != null){
+                                                float chillturns = Math.min(10, enemy.buff(Chill.class).cooldown());
+                                                damagerollmax = (int)Math.round(damagerollmax * Math.pow(0.9333f, chillturns));
+                                                damagerollmin = (int)Math.round(damagerollmin * Math.pow(0.9333f, chillturns));
+                                        }
+                                        if (enemy.buff(Frost.class) != null){
+                                                damagerollmax = 0;
+                                                damagerollmin = 0;
+                                        }
+                                }
                         }
                 }
 
                 spend( 1f );
                 Invisibility.dispel(this);
+                if (hit( this, enemy, true ) || (LightOrb.wand instanceof WandOfFrost)) {
+                        enemy.damage( Random.NormalIntRange(damagerollmin, damagerollmax), new YogFist.DarkFist.DarkBolt() );
+                        Sample.INSTANCE.play( Assets.Sounds.HIT_MAGIC, 1, Random.Float(0.87f, 1.15f) );
+                        if (Dungeon.level.water[enemy.pos])
+                                Buff.affect(enemy, Chill.class, 4+wandlevel);
+                        else
+                                Buff.affect(enemy, Chill.class, 2+wandlevel);
+
+                }
+
+
+
                 if (hit( this, enemy, true ) || (LightOrb.wand instanceof WandOfMagicMissile)) {
                         enemy.damage( Random.NormalIntRange(damagerollmin, damagerollmax), new YogFist.DarkFist.DarkBolt() );
                         Sample.INSTANCE.play( Assets.Sounds.HIT_MAGIC, 1, Random.Float(0.87f, 1.15f) );
-
-
-                } else {
-
+                }
+                else {
                         enemy.sprite.showStatus( CharSprite.NEUTRAL,  enemy.defenseVerb() );
                 }
 
@@ -317,11 +346,13 @@ public class LightOrb extends DirectableAlly {
                         btnWand = new WndBlacksmith.ItemButton(){
                                 @Override
                                 protected void onClick(){
-                                        if (orb.wand != null) {
-                                                item(new WndBag.Placeholder(ItemSpriteSheet.WAND_HOLDER));
-                                                if (!orb.wand.doPickUp(Dungeon.hero)){
-                                                        Dungeon.level.drop( orb.wand, Dungeon.hero.pos);
-                                                }}
+                                        if (LightOrb.wand != null){
+                                                item(new WndBag.Placeholder(ItemSpriteSheet.WEAPON_HOLDER));
+                                                if (!LightOrb.wand.doPickUp(Dungeon.hero)){
+                                                        Dungeon.level.drop( LightOrb.wand, Dungeon.hero.pos);
+                                                }
+                                                LightOrb.wand = null;
+                                        }
 
                                         else {
                                                 GameScene.selectItem(new WndBag.ItemSelector() {
@@ -360,7 +391,6 @@ public class LightOrb extends DirectableAlly {
                                                                         LightOrb.wand = (Wand) item;
                                                                         item(LightOrb.wand);
                                                                 }
-
                                                                 if ((item instanceof Wand)) {
                                                                         LightOrb.wand = null;
                                                                 }
