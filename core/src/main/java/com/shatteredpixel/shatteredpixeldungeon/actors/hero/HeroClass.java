@@ -62,11 +62,13 @@ import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfMagicMappi
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfRage;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfUpgrade;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfBlastWave;
+import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfCorruption;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfDisintegration;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfFireblast;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfFrost;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfLightning;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfMagicMissile;
+import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfTransfusion;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.SpiritBow;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Dagger;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Gloves;
@@ -111,6 +113,10 @@ public enum HeroClass {
 		i = new WandOfLightning();
 		if (!Challenges.isItemBlocked(i)) i.collect();
 		i = new WandOfDisintegration();
+		if (!Challenges.isItemBlocked(i)) i.collect();
+		i = new WandOfCorruption();
+		if (!Challenges.isItemBlocked(i)) i.collect();
+		i = new WandOfTransfusion();
 		if (!Challenges.isItemBlocked(i)) i.collect();
 		i = new TengusMask();
 		if (!Challenges.isItemBlocked(i)) i.collect();

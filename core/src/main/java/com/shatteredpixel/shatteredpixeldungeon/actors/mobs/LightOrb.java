@@ -1,5 +1,11 @@
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
+import static com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfCorruption.MAJOR_DEBUFFS;
+import static com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfCorruption.MAJOR_DEBUFF_WEAKEN;
+import static com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfCorruption.MINOR_DEBUFFS;
+import static com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfCorruption.MINOR_DEBUFF_WEAKEN;
+
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
@@ -8,9 +14,14 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.CorrosiveGas;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.ToxicGas;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AllyBuff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AscensionChallenge;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Burning;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Chill;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Corruption;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Doom;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.FlavourBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Frost;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Light;
@@ -30,6 +41,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfBlastWave;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfCorruption;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfFrost;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfMagicMissile;
+import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfTransfusion;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
@@ -53,6 +65,8 @@ import com.watabou.utils.Bundle;
 import com.watabou.utils.Callback;
 import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
+
+import java.util.HashMap;
 
 public class LightOrb extends DirectableAlly {
 
@@ -134,10 +148,11 @@ public class LightOrb extends DirectableAlly {
                         }
                 }
         }
+        public static int wandlevel = 0;
+
         protected void zap() {
                 int damagerollmax = 0;
                 int damagerollmin = 0;
-                int wandlevel = 0;
                 if (LightOrb.wand != null) {
                         wandlevel = (LightOrb.wand).level();
                         if (LightOrb.wand instanceof DamageWand){
@@ -160,10 +175,10 @@ public class LightOrb extends DirectableAlly {
                 if (hit( this, enemy, true ) && (LightOrb.wand instanceof WandOfFrost)) {
                         enemy.damage( Random.NormalIntRange(damagerollmin, damagerollmax), new YogFist.DarkFist.DarkBolt() );
                         Sample.INSTANCE.play( Assets.Sounds.HIT_MAGIC, 1, Random.Float(0.87f, 1.15f) );
-                        //if (Dungeon.level.water[enemy.pos])
-                        //        Buff.affect(enemy, Chill.class, 4+wandlevel);
-                        //else
-                         //       Buff.affect(enemy, Chill.class, 2+wandlevel);
+                        if (Dungeon.level.water[enemy.pos])
+                                Buff.affect(enemy, Chill.class, 4+wandlevel);
+                        else
+                                Buff.affect(enemy, Chill.class, 2+wandlevel);
                 }
 
                 if (hit( this, enemy, true ) && (LightOrb.wand instanceof WandOfMagicMissile)) {
@@ -171,6 +186,99 @@ public class LightOrb extends DirectableAlly {
                         Sample.INSTANCE.play( Assets.Sounds.HIT_MAGIC, 1, Random.Float(0.87f, 1.15f) );
                 }
 
+                if (hit( this, enemy, true ) && (LightOrb.wand instanceof WandOfCorruption)) {
+                        float corruptingPower = 3 + wandlevel/2f;
+                        float enemyResist;
+                        if (enemy instanceof Mimic || enemy instanceof Statue){
+                                enemyResist = 1 + Dungeon.depth;
+                        } else if (enemy instanceof Piranha || enemy instanceof Bee) {
+                                enemyResist = 1 + Dungeon.depth/2f;
+                        } else if (enemy instanceof Wraith) {
+                                enemyResist = (1f + Dungeon.scalingDepth()/3f) / 5f;
+                        } else if (enemy instanceof Swarm){
+                                enemyResist = 1 + AscensionChallenge.AscensionExp((Mob) enemy);
+                                if (enemyResist == 1) enemyResist = 1 + 3;
+                        } else {
+                                enemyResist = 1 + AscensionChallenge.AscensionExp((Mob) enemy);
+                        }
+
+                        //100% health: 5x resist   75%: 3.25x resist   50%: 2x resist   25%: 1.25x resist
+                        enemyResist *= 1 + 4*Math.pow(enemy.HP/(float)enemy.HT, 2);
+
+                        //debuffs placed on the enemy reduce their resistance
+                        for (Buff buff : enemy.buffs()){
+                                if (MAJOR_DEBUFFS.containsKey(buff.getClass()))         enemyResist *= (1f-MAJOR_DEBUFF_WEAKEN);
+                                else if (MINOR_DEBUFFS.containsKey(buff.getClass()))    enemyResist *= (1f-MINOR_DEBUFF_WEAKEN);
+                                else if (buff.type == Buff.buffType.NEGATIVE)           enemyResist *= (1f-MINOR_DEBUFF_WEAKEN);
+                        }
+
+                        //cannot re-corrupt or doom an enemy, so give them a major debuff instead
+                        if(enemy.buff(Corruption.class) != null || enemy.buff(Doom.class) != null){
+                                corruptingPower = enemyResist - 0.001f;
+                        }
+                        if (corruptingPower > enemyResist){
+                                corruptEnemy((Mob) enemy);
+
+                        } else {
+                                float debuffChance = corruptingPower / enemyResist;
+                                if (Random.Float() < debuffChance){
+                                        debuffEnemy((Mob) enemy, MAJOR_DEBUFFS);
+                                } else {
+                                        debuffEnemy((Mob) enemy, MINOR_DEBUFFS);
+                                }
+                        }
+                        Sample.INSTANCE.play( Assets.Sounds.HIT_MAGIC, 1, 0.8f * Random.Float(0.87f, 1.15f) );
+
+
+
+                        Sample.INSTANCE.play( Assets.Sounds.HIT_MAGIC, 1, Random.Float(0.87f, 1.15f) );
+                }
+                if (hit( this, enemy, true ) && (LightOrb.wand instanceof WandOfTransfusion)) {
+                        enemy.damage( Random.NormalIntRange(damagerollmin, damagerollmax), new YogFist.DarkFist.DarkBolt() );
+                        Sample.INSTANCE.play( Assets.Sounds.HIT_MAGIC, 1, Random.Float(0.87f, 1.15f) );
+                }
+        }
+
+        private void debuffEnemy( Mob enemy, HashMap<Class<? extends Buff>, Float> category ){
+
+                //do not consider buffs which are already assigned, or that the enemy is immune to.
+                HashMap<Class<? extends Buff>, Float> debuffs = new HashMap<>(category);
+                for (Buff existing : enemy.buffs()){
+                        if (debuffs.containsKey(existing.getClass())) {
+                                debuffs.put(existing.getClass(), 0f);
+                        }
+                }
+                for (Class<?extends Buff> toAssign : debuffs.keySet()){
+                        if (debuffs.get(toAssign) > 0 && enemy.isImmune(toAssign)){
+                                debuffs.put(toAssign, 0f);
+                        }
+                }
+
+                //all buffs with a > 0 chance are flavor buffs
+                Class<?extends FlavourBuff> debuffCls = (Class<? extends FlavourBuff>) Random.chances(debuffs);
+
+                if (debuffCls != null){
+                        Buff.append(enemy, debuffCls, 6 + wandlevel * 3);
+                } else {
+                        //if no debuff can be applied (all are present), then go up one tier
+                        if (category == MINOR_DEBUFFS)          debuffEnemy( enemy, MAJOR_DEBUFFS);
+                        else if (category == MAJOR_DEBUFFS)     Buff.affect(enemy, Corruption.class);
+                }
+        }
+
+        private void corruptEnemy( Mob enemy ){
+                //cannot re-corrupt or dcccb v oom an enemy, so give them a major debuff instead
+                if(enemy.buff(Corruption.class) != null || enemy.buff(Doom.class) != null){
+                        GLog.w( Messages.get(this, "already_corrupted") );
+                        return;
+                }
+
+                if (!enemy.isImmune(Corruption.class)){
+                        Corruption.corruptionHeal(enemy);
+                        AllyBuff.affectAndLoot(enemy, hero, Corruption.class);
+                } else {
+                        Buff.affect(enemy, Doom.class);
+                }
         }
 
         public void onZapComplete() {
@@ -338,8 +446,8 @@ public class LightOrb extends DirectableAlly {
                                 protected void onClick(){
                                         if (LightOrb.wand != null){
                                                 item(new WndBag.Placeholder(ItemSpriteSheet.WAND_HOLDER));
-                                                if (!LightOrb.wand.doPickUp(Dungeon.hero)){
-                                                        Dungeon.level.drop( LightOrb.wand, Dungeon.hero.pos);
+                                                if (!LightOrb.wand.doPickUp(hero)){
+                                                        Dungeon.level.drop( LightOrb.wand, hero.pos);
                                                 }
                                                 LightOrb.wand = null;
                                         }
@@ -377,7 +485,7 @@ public class LightOrb extends DirectableAlly {
                                                                         hide();
                                                                 }
                                                                 else {
-                                                                        item.detach(Dungeon.hero.belongings.backpack);
+                                                                        item.detach(hero.belongings.backpack);
                                                                         LightOrb.wand = (Wand) item;
                                                                         item(LightOrb.wand);
                                                                 }

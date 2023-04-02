@@ -85,8 +85,8 @@ public class WandOfCorruption extends Wand {
 	// This is because the wand of corruption considers them to be a certain level of harmful
 	// for the purposes of reducing resistance, but does not actually apply them itself
 	
-	private static final float MINOR_DEBUFF_WEAKEN = 1/4f;
-	private static final HashMap<Class<? extends Buff>, Float> MINOR_DEBUFFS = new HashMap<>();
+	public static final float MINOR_DEBUFF_WEAKEN = 1/4f;
+	public static final HashMap<Class<? extends Buff>, Float> MINOR_DEBUFFS = new HashMap<>();
 	static{
 		MINOR_DEBUFFS.put(Weakness.class,       2f);
 		MINOR_DEBUFFS.put(Vulnerable.class,     2f);
@@ -104,8 +104,8 @@ public class WandOfCorruption extends Wand {
 		MINOR_DEBUFFS.put(Poison.class,         0f);
 	}
 	
-	private static final float MAJOR_DEBUFF_WEAKEN = 1/2f;
-	private static final HashMap<Class<? extends Buff>, Float> MAJOR_DEBUFFS = new HashMap<>();
+	public static final float MAJOR_DEBUFF_WEAKEN = 1/2f;
+	public static final HashMap<Class<? extends Buff>, Float> MAJOR_DEBUFFS = new HashMap<>();
 	static{
 		MAJOR_DEBUFFS.put(Amok.class,           3f);
 		MAJOR_DEBUFFS.put(Slow.class,           2f);
@@ -218,7 +218,7 @@ public class WandOfCorruption extends Wand {
 	}
 	
 	private void corruptEnemy( Mob enemy ){
-		//cannot re-corrupt or doom an enemy, so give them a major debuff instead
+		//cannot re-corrupt or dcccb v oom an enemy, so give them a major debuff instead
 		if(enemy.buff(Corruption.class) != null || enemy.buff(Doom.class) != null){
 			GLog.w( Messages.get(this, "already_corrupted") );
 			return;
