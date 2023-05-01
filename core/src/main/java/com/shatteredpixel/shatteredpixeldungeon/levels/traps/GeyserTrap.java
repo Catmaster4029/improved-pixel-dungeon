@@ -26,6 +26,10 @@ import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Fire;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Burning;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Light;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Soggy;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Splash;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfBlastWave;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
@@ -72,7 +76,8 @@ public class GeyserTrap extends Trap {
 		for (int i : PathFinder.NEIGHBOURS8){
 			Char ch = Actor.findChar(pos + i);
 			if (ch != null){
-				//trace a ballistica to our target (which will also extend past them)
+				Buff.affect(ch, Soggy.class, 40);
+				Buff.detach( ch, Light.class );
 				Ballistica trajectory = new Ballistica(pos, ch.pos, Ballistica.STOP_TARGET);
 				//trim it to just be the part that goes past them
 				trajectory = new Ballistica(trajectory.collisionPos, trajectory.path.get(trajectory.path.size()-1), Ballistica.PROJECTILE);
@@ -83,11 +88,13 @@ public class GeyserTrap extends Trap {
 
 		Char ch = Actor.findChar(pos);
 		if (ch != null){
+
 			int targetpos = -1;
 			if (centerKnockBackDirection != -1){
 				targetpos = centerKnockBackDirection;
 			} else if (ch == Dungeon.hero){
-				//if it is the hero, random direction that isn't into a hazard
+				Buff.affect(ch, Soggy.class, 40);
+				Buff.detach( ch, Light.class );
 				ArrayList<Integer> candidates = new ArrayList<>();
 				for (int i : PathFinder.NEIGHBOURS8){
 					//add as a candidate if both cells on the trajectory are safe

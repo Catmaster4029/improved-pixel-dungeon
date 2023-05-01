@@ -41,5 +41,15 @@ public class DarkGold extends Item {
 	@Override
 	public boolean isIdentified() {
 		return true;
+	};
+
+	@Override
+	public int value() {
+		return 15;
+	};
+
+	@Override
+	public int energyVal() {
+		return 1;
 	}
 }

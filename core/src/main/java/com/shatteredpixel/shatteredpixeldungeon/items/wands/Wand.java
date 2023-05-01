@@ -91,7 +91,11 @@ public abstract class Wand extends Item {
 		usesTargeting = true;
 		bones = true;
 	}
-	
+	@Override
+	public int energyVal() {
+		return 12;
+	}
+
 	@Override
 	public ArrayList<String> actions( Hero hero ) {
 		ArrayList<String> actions = super.actions( hero );

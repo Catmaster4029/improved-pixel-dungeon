@@ -114,7 +114,7 @@ public enum HeroClass {
 		if (!Challenges.isItemBlocked(i)) i.collect();
 		i = new WandOfDisintegration();
 		if (!Challenges.isItemBlocked(i)) i.collect();
-		i = new WandOfCorruption();
+		i = new WandOfFireblast();
 		if (!Challenges.isItemBlocked(i)) i.collect();
 		i = new WandOfTransfusion();
 		if (!Challenges.isItemBlocked(i)) i.collect();
